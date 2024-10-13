@@ -12,7 +12,7 @@ def interpret_results(results, user_query):
     input_text = (
         f"Given the following SQL query result:\n{results_str}\n"
         f"Based on this data, answer the original user question: '{user_query}'. "
-        f"Provide a concise and numerical answer to the user question."
+        f"Provide a concise and numerical answer to the user question but do add a few words to contextualise it."
     )
 
     # Send the prompt to OpenAI API
