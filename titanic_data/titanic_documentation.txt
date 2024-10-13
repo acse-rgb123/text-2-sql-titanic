@@ -1,0 +1,35 @@
+
+Dataset: Titanic Passenger Information Database
+
+1. Table: passengers  
+Description: This table contains information about passengers on board the Titanic, including their personal details, survival status, and ticket information.  
+- Column: passenger_id (INTEGER) - A unique identifier for each passenger.  
+- Column: name (TEXT) - Full name of the passenger.  
+- Column: age (REAL) - Age of the passenger in years.  
+- Column: sex (TEXT) - Gender of the passenger (male/female).  
+- Column: ticket (TEXT) - The ticket number issued to the passenger.  
+- Column: fare (REAL) - The fare paid by the passenger for the journey (in British pounds).  
+- Column: survived (INTEGER) - Survival status (1 = survived, 0 = did not survive).  
+- Column: pclass (INTEGER) - The class of the ticket (1st, 2nd, 3rd).  
+- Column: embarked (TEXT) - Port where the passenger embarked (C = Cherbourg, Q = Queenstown, S = Southampton).
+
+2. Table: tickets  
+Description: This table stores ticket-related information, including the fare amount and class. It serves as a reference for tracking ticket purchases by passengers.  
+- Column: ticket_number (TEXT) - Unique ticket number associated with each purchase.  
+- Column: fare (REAL) - Amount paid for the ticket.  
+- Column: pclass (INTEGER) - Ticket class (1st, 2nd, 3rd).  
+- Column: embarked (TEXT) - The port where the passenger boarded the Titanic.
+
+3. Table: survival_stats  
+Description: This table provides aggregated data on survival rates based on different demographic groups such as age, class, and gender.  
+- Column: group_id (INTEGER) - Unique identifier for each demographic group (e.g., gender and age ranges).  
+- Column: group_type (TEXT) - Type of demographic group (e.g., "Age", "Gender", "Class").  
+- Column: survival_rate (REAL) - Survival rate for the group.  
+- Column: total_count (INTEGER) - Total number of individuals in this group.  
+- Column: survived_count (INTEGER) - Number of individuals who survived in this group.
+
+4. Table: embarkation_ports  
+Description: This table contains the codes for different embarkation ports and their associated geographic information.  
+- Column: port_code (TEXT) - A unique code representing the port (C, Q, or S).  
+- Column: port_name (TEXT) - Full name of the embarkation port.  
+- Column: country (TEXT) - The country where the port is located.

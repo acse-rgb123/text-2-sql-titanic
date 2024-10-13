@@ -1,0 +1,62 @@
+
+Sample Gold Standard SQL Queries:
+
+1. Query 1: Find all passengers who survived and paid more than 50 pounds for their fare.
+```sql
+SELECT name, age, sex, fare, survived 
+FROM passengers 
+WHERE survived = 1 AND fare > 50;
+```
+
+2. Query 2: Retrieve the total number of passengers by each ticket class (1st, 2nd, 3rd).
+```sql
+SELECT pclass, COUNT(passenger_id) AS passenger_count 
+FROM passengers 
+GROUP BY pclass;
+```
+
+3. Query 3: List all passengers who embarked from Southampton (port code 'S') and survived.
+```sql
+SELECT name, age, sex, fare, embarked, survived 
+FROM passengers 
+WHERE embarked = 'S' AND survived = 1;
+```
+
+4. Query 4: Get the survival rate for male and female passengers.
+```sql
+SELECT sex, AVG(survived) AS survival_rate 
+FROM passengers 
+GROUP BY sex;
+```
+
+5. Query 5: Find the top 5 most expensive fares paid by passengers who did not survive.
+```sql
+SELECT name, fare 
+FROM passengers 
+WHERE survived = 0 
+ORDER BY fare DESC 
+LIMIT 5;
+```
+
+6. Query 6: Count the number of passengers who embarked from each port.
+```sql
+SELECT embarked, COUNT(passenger_id) AS passenger_count 
+FROM passengers 
+GROUP BY embarked;
+```
+
+7. Query 7: Get the average fare paid by passengers in each class who survived.
+```sql
+SELECT pclass, AVG(fare) AS avg_fare 
+FROM passengers 
+WHERE survived = 1 
+GROUP BY pclass;
+```
+
+8. Query 8: Find the number of children (under 18) who survived, grouped by ticket class.
+```sql
+SELECT pclass, COUNT(passenger_id) AS child_survivors 
+FROM passengers 
+WHERE age < 18 AND survived = 1 
+GROUP BY pclass;
+```
