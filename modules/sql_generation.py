@@ -38,7 +38,8 @@ def generate_sql_prompt(query, schema, relevant_gold_sql=None):
         f"Generate a valid SQL query for the user question: '{query}'. "
         f"Use the table '{table_name}' and the columns: {', '.join(relevant_cols)}. "
         f"Here are the mapped columns based on the user query: {', '.join(mapped_columns)}. "
-        f"Here is a template SQL query you can modify: {sql_template}. "
+        f"Here is the SQL query to modify: {sql_template}."
+        f"make sure the output table is named appropriatley so that it can be analysed"
         f"Only return the SQL query without any explanations, comments, or additional text."
     )
 
