@@ -10,7 +10,7 @@ from modules import (
     interpret_results
 )
 # imported openAI key
-openai.api_key = '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'
+openai.api_key = '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'
 
 def run_pipeline(config_file, user_query=None):
     """
