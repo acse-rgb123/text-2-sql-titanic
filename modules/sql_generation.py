@@ -35,7 +35,8 @@ def generate_sql_prompt(query, schema, relevant_gold_sql=None):
         f"Modify the following SQL query based on the user question: '{query}'. "
         f"Use the table '{table_name}' and the columns: {', '.join(relevant_cols)}. "
         f"Here is the SQL query to modify: {sql_template}."
-        f"Only return the modified SQL query."
+        f"make sure the output table is named appropriatley so that it can be analysed"
+        f"Only return the SQL query without any explanations, comments, or additional text."
     )
 
     # Call GPT-4 API to modify the SQL query
