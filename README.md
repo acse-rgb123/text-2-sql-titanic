@@ -34,10 +34,6 @@ This project allows users to input natural language questions about the Titanic 
    python main.py
     
 
----
-
-Here is the requirements section in a separate block:
-
 ```markdown
 ## Requirements
 
