@@ -8,7 +8,7 @@ from modules.result_interpretation import interpret_results
 import openai
 
 # imported openAI key
-openai.api_key = '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'
+openai.api_key = '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'
 
 # Define paths for data and metadata
 TITANIC_DATA_FOLDER = 'titanic_data/'

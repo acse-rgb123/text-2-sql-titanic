@@ -26,7 +26,7 @@ def generate_sql_prompt(query, relevant_schema, relevant_gold_sql=None):
     response = openai.ChatCompletion.create(
         model="gpt-4",
         messages=[
-            {"role": "system", "content": "You are an expert in SQL generation."},
+            {"role": "system", "content": "You are an expert in SQL generation and connecting contextual words to the columns in the table."},
             {"role": "user", "content": input_text}
         ],
         max_tokens=150,
