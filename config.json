@@ -1,0 +1,7 @@
+{
+    "db_file": "titanic_data/titanic.db",
+    "docs_file": "titanic_data/titanic_documentation.txt",
+    "gold_sql_file": "titanic_data/titanic_gold_sql_queries.txt",
+    "metadata_folder": "metadata",
+    "user_query": "How many passengers survived?"
+}
