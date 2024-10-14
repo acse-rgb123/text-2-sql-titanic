@@ -26,7 +26,8 @@ This project allows users to input natural language questions about the Titanic 
 3. **Install dependencies:**
 
    ```bash
-   pip install -r requirements.txt
+   pip install -r requirements.
+   pip install openai==0.28
 
 2. **Run**
 
