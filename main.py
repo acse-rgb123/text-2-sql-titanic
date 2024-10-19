@@ -1,81 +1,52 @@
-import os
 import openai
-import json
-from modules import (
-    extract_schema_from_db,
-    create_vector_db_from_schema, create_vector_db_from_docs, create_vector_db_from_sql,
-    retrieve_relevant_data,
-    generate_sql_prompt,
-    execute_sql_query,
-    interpret_results
-)
-# imported openAI key
-openai.api_key = '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'
+import os
+
+# Import everything from the 'modules' package
+from modules import UserInput, Vectorizing, RAG, SQLGenerationAndExecution, ResultInterpretation, LLM
+
+# Load OpenAI API key from environment variable
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def run_pipeline(config_file, user_query=None):
-    """
-    Run the query pipeline with dynamic paths and settings loaded from a JSON configuration file.
+    # Step 1: Retrieve data from configuration file
+    user_input = UserInput(None, config_file)  # Pass None for input_data if not needed
+    config_data = user_input.retrieve_data()
 
-    :param config_file: Path to the JSON configuration file containing paths and settings.
-    :param user_query: Optional user query. If None, the query from the JSON file is used.
-    """
-    
-    # Load the paths and user query from the JSON configuration file
-    with open(config_file, 'r') as f:
-        config = json.load(f)
+    # Check if the user provided a query, otherwise fall back to the config file
+    if not user_query:
+        user_query = config_data.get('user_query')  # Use query from config file if no user query is provided
 
-    db_file = config["db_file"]
-    docs_file = config["docs_file"]
-    gold_sql_file = config["gold_sql_file"]
-    metadata_folder = config["metadata_folder"]
-
-    # Use the query provided in the function if available, otherwise use the one in the JSON config
-    if user_query is None:
-        user_query = config["user_query"]
-
-    # Step 1: Extract schema from the database
-    schema = extract_schema_from_db(db_file)
-
-    # Step 2: Vectorize data if vector databases don't exist
-    if not os.path.exists(os.path.join(metadata_folder, "schema_index.faiss")):
-        create_vector_db_from_schema(schema, metadata_folder=metadata_folder)
-    if not os.path.exists(os.path.join(metadata_folder, "documentation_index.faiss")):
-        with open(docs_file, 'r') as f:
-            docs = f.readlines()
-        create_vector_db_from_docs(docs, metadata_folder=metadata_folder)
-    if not os.path.exists(os.path.join(metadata_folder, "gold_sql_index.faiss")):
-        with open(gold_sql_file, 'r') as f:
-            gold_sql_queries = f.readlines()
-        create_vector_db_from_sql(gold_sql_queries, metadata_folder=metadata_folder)
+    # Step 2: Vectorize schema
+    schema = config_data['schema']  # Assuming the schema is provided in the config
+    vectorizer = Vectorizing()
+    vectorizer.create_vector_db_from_schema(schema)
 
     # Step 3: Retrieve relevant schema and gold SQL data
-    relevant_schema = retrieve_relevant_data(user_query, db_type="schema", metadata_folder=metadata_folder)
-    relevant_gold_sql = retrieve_relevant_data(user_query, db_type="gold_sql", metadata_folder=metadata_folder)
+    rag = RAG()
+    relevant_schema = rag.retrieve_relevant_data(user_query, db_type="schema")
+    relevant_gold_sql = rag.retrieve_relevant_data(user_query, db_type="gold_sql")
 
-    # Step 4: Generate SQL query using GPT-4
-    sql_query = generate_sql_prompt(user_query, schema, relevant_gold_sql)
+    # Step 4: Instantiate LLM and generate SQL query
+    llm = LLM()
+    sql_gen_exec = SQLGenerationAndExecution(llm)
+    sql_query = sql_gen_exec.generate_sql(user_query, schema, relevant_gold_sql)
 
-    # Step 5: Execute the generated SQL query
-    results = execute_sql_query(db_file, sql_query)
+    # Step 5: Execute the SQL query
+    db_file = config_data['db_file']
+    results = sql_gen_exec.execute_sql_query(db_file, sql_query)
 
-    # Step 6: Interpret the results
-    interpretation = interpret_results(results, user_query)
-
-    # Print the SQL query, results, and interpretation
-    print(f"Generated SQL Query:\n{sql_query}")
-    print(f"Query Results:\n{results}")
-    print(f"Interpretation:\n{interpretation}")
+    # Step 6: Interpret and display the results using GPT
+    result_interpreter = ResultInterpretation(llm)
+    result_interpreter.display_results(results, user_query)
 
 if __name__ == "__main__":
-    # Use the JSON configuration file to provide paths and settings
-    config_file = 'config.json'  # Specify the path to the JSON file
+    config_file = "config.json"  # Path to the JSON config file
     
-    # Ask the user for a query or hit enter to use the JSON query
-    user_input = input("Enter your query (or press Enter to use the query from the JSON file): ")
+    # Allow the user to input their own query
+    user_query = input("Enter your query (or press Enter to use the query from config file): ").strip()
     
-    if user_input.strip():
-        # If the user provided input, use that as the query
-        run_pipeline(config_file, user_query=user_input)
-    else:
-        # If no input was provided, use the query from the JSON file
-        run_pipeline(config_file)
+    # Pass user_query as None if the user presses Enter
+    if user_query == "":
+        user_query = None
+    
+    run_pipeline(config_file, user_query)
